@@ -13,13 +13,13 @@
 -->
 
   <groupId>org.jenkins-ci.plugins</groupId>
-  <artifactId>travis-yml</artifactId>
+  <artifactId>jenkins-yml</artifactId>
   <version>0.1.1</version>
 
-  <name>Travis YML Plugin</name>
-  <description>This plugin provides a Pipeline step to read a .travis.yml file and run it as a part of a Pipeline job.
+  <name>Jenkins YML Plugin</name>
+  <description>This plugin provides a Pipeline step to read a .jenkins.yml file and run it as a part of a Pipeline job.
   </description>
-  <url>https://wiki.jenkins-ci.org/display/JENKINS/Travis+YML+Plugin</url>
+  <url>https://wiki.jenkins-ci.org/display/JENKINS/Jenkins+YML+Plugin</url>
   <licenses>
     <license>
       <name>MIT License</name>

@@ -1,7 +1,7 @@
-require_relative 'travis_yml_script'
+require_relative 'jenkins_yml_script'
 
-class TravisYmlBuilder < Jenkins::Tasks::Builder
-  display_name "Build using .travis.yml"
+class JenkinsYmlBuilder < Jenkins::Tasks::Builder
+  display_name "Build using .jenkins.yml"
 
   def initialize(attrs = {})
   end
@@ -24,15 +24,15 @@ class TravisYmlBuilder < Jenkins::Tasks::Builder
     ws = build.workspace
     envvars = build.native.getEnvironment()
 
-    script = TravisYmlScript.new(:file => ws.join(".travis.yml"))
+    script = JenkinsYmlScript.new(:file => ws.join(".jenkins.yml"))
     script.build
 
     now = Time.now.instance_eval { '%s.%03d' % [ strftime('%Y%m%d%H%M%S'), (usec/1000.0).round ] }
-    runner = ws.join("hudson.#{now}.sh")
+    runner = ws.join("yml.#{now}.sh")
     runner.native.write(script.to_s, nil) # XXX: need Jenkins::FilePath#write
 
-    ret = execute_script!(launcher, runner, { :chdir => ws, :out => listener })
-    build.abort unless ret == 0
+    ret = execute_script!(launcher, envvars, runner, { :chdir => ws, :out => listener })
+    build.abort "Failed! " unless ret == 0
   end
 
   private

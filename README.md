@@ -1,6 +1,6 @@
-# travis-yml plugin for Jenkins
+# jenkins-yml plugin for Jenkins
 
-Run Jenkins build step using .travis.yml
+Run Jenkins build step using .jenkins.yml
 
 ## Development
 

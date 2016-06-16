@@ -1,6 +1,6 @@
 require 'yaml'
 
-class TravisYmlScript
+class JenkinsYmlScript
   def initialize(attrs = {})
     @cmds = []
     @file = attrs[:file]
@@ -28,19 +28,19 @@ class TravisYmlScript
 
 capture_result() {
   local result=$1
-  export TRAVIS_JENKINS_RESULT=$(( ${TRAVIS_JENKINS_RESULT:-0} | $(($result != 0)) ))
+  export YAML_JENKINS_RESULT=$(( ${YAML_JENKINS_RESULT:-0} | $(($result != 0)) ))
 }
 
 export CI=1
 export CONTINUOUS_INTEGRATION=1
-export TRAVIS_JENKINS_RESULT=0
+export YAML_JENKINS_RESULT=0
 
 __HEADER__
   end
 
   def footer
     return <<__FOOTER__
-exit $TRAVIS_JENKINS_RESULT
+exit $YAML_JENKINS_RESULT
 __FOOTER__
   end
 
@@ -55,9 +55,9 @@ __FOOTER__
   end
 
   def build_proc(conf)
-    %w[ before_install install before_script script after_script ].each do |k|
+    %w[ before_install install before_script script ].each do |k|
       values(conf, k).each do |cmd|
-        run_if("$TRAVIS_JENKINS_RESULT -eq 0") do
+        run_if("$YAML_JENKINS_RESULT -eq 0") do
           echo(cmd)
           run(cmd)
           capture_result
@@ -68,17 +68,25 @@ __FOOTER__
 
   def build_post_proc(conf)
     values(conf, "after_success").each do |cmd|
-      run_if("$TRAVIS_JENKINS_RESULT -eq 0") do
+      run_if("$YAML_JENKINS_RESULT -eq 0") do
         echo(cmd)
         run(cmd)
+        capture_result
       end
     end
 
     values(conf, "after_failure").each do |cmd|
-      run_if("$TRAVIS_JENKINS_RESULT -ne 0") do
+      run_if("$YAML_JENKINS_RESULT -ne 0") do
         echo(cmd)
         run(cmd)
+        capture_result
       end
+    end
+
+    values(conf, "after_script").each do |cmd|
+      echo(cmd)
+      run(cmd)
+      capture_result
     end
   end
 
